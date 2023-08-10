@@ -25,6 +25,7 @@ ON r.rental_id = p.rental_id
 WHERE amount > 7
 ORDER BY amount
 
+
 --first_name |last_name   |amount|
 -------------+------------+------+
 --Justin     |Ngo         |  7.98|
@@ -62,6 +63,15 @@ WHERE c.customer_id IN (
 GROUP BY c.customer_id, c.first_name, c.last_name, c.email, c.address_id, c.activebool, c.create_date, c.last_update , c.active
 ORDER BY sum ASC;
 
+SELECT sum(p.amount), c.customer_id, c.first_name, c.last_name, c.email, c.address_id
+FROM customer c
+JOIN payment p
+ON c.customer_id = p.customer_id
+GROUP BY c.customer_id, c.first_name, c.last_name, c.email, c.address_id
+HAVING sum(amount) > 175
+ORDER BY sum DESC
+
+
 
 --sum   |customer_id|first_name|last_name|email                            |address_id|activebool|create_date|last_update            |active|
 --------+-----------+----------+---------+---------------------------------+----------+----------+-----------+-----------------------+------+
@@ -83,6 +93,8 @@ ON a.city_id = c2.city_id
 JOIN country c3
 ON c2.country_id = c3.country_id
 WHERE country = 'Argentina'
+
+
 
 --customer_id|store_id|first_name|last_name|email                               |address_id|activebool|create_date|last_update            |active|loyalty_member|address_id|address                         |address2|district    |city_id|postal_code|phone       |last_update            |city_id|city                |country_id|last_update            |country_id|country  |last_update            |
 -------------+--------+----------+---------+------------------------------------+----------+----------+-----------+-----------------------+------+--------------+----------+--------------------------------+--------+------------+-------+-----------+------------+-----------------------+-------+--------------------+----------+-----------------------+----------+---------+-----------------------+
