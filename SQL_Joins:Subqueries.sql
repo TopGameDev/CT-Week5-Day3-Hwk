@@ -5,6 +5,17 @@ JOIN address a
 ON c.address_id  = a.address_id
 WHERE district = 'Texas'
 
+SELECT c.first_name, c.last_name, a.district
+FROM customer c
+JOIN address a
+ON c.address_id  = a.address_id
+WHERE district = (
+	SELECT a.district
+	FROM address a
+	WHERE district = 'Texas'
+	GROUP BY district
+)
+
 
 --first_name|last_name|district|
 ------------+---------+--------+
@@ -24,6 +35,18 @@ JOIN payment p
 ON r.rental_id = p.rental_id 
 WHERE amount > 7
 ORDER BY amount
+
+SELECT c.first_name, c.last_name, p.amount
+FROM customer c 
+JOIN payment p
+ON c.customer_id = p.customer_id 
+WHERE amount = (
+	SELECT p.amount
+	FROM customer c
+	WHERE amount > 7
+	GROUP BY p.amount
+)
+ORDER BY amount ASC
 
 
 --first_name |last_name   |amount|
@@ -94,6 +117,20 @@ JOIN country c3
 ON c2.country_id = c3.country_id
 WHERE country = 'Argentina'
 
+SELECT *
+FROM customer c
+JOIN address a
+ON c.address_id = a.address_id
+JOIN city c2
+ON a.city_id = c2.city_id
+JOIN country c3
+ON c2.country_id = c3.country_id
+WHERE country = (
+	SELECT c3.country
+	FROM address a
+	WHERE country = 'Argentina'
+	GROUP BY country
+)
 
 
 --customer_id|store_id|first_name|last_name|email                               |address_id|activebool|create_date|last_update            |active|loyalty_member|address_id|address                         |address2|district    |city_id|postal_code|phone       |last_update            |city_id|city                |country_id|last_update            |country_id|country  |last_update            |
@@ -120,6 +157,20 @@ JOIN film_category fc
 ON f.film_id = fc.film_id
 JOIN category c
 ON c.category_id = fc.category_id
+GROUP BY fc.category_id, c."name"
+ORDER BY count(*) DESC
+
+SELECT fc.category_id, c."name", count(c."name") AS num_movies
+FROM film f
+JOIN film_category fc 
+ON f.film_id = fc.film_id
+JOIN category c
+ON c.category_id = fc.category_id
+WHERE c.category_id = (
+	SELECT fc.category_id
+	FROM film f
+	GROUP BY fc.category_id, c."name"
+)
 GROUP BY fc.category_id, c."name"
 ORDER BY count(*) DESC
 
